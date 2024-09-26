@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 import pickle
 import streamlit as st
 
-df = pd.read_excel("D://newmoli.xlsx")
+df = pd.read_excel("newmoli.xlsx")
 
 df=df[(df['rate']>58) &(df['rate']<=80)]
 
