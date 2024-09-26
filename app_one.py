@@ -133,4 +133,5 @@ if st.button('Calculate Rate'):
         hours, minute = minutes_to_hours(minutes)
         st.success(f"The estimated time is {hours} hours and {minute} minutes.")
         st.write(f"Accuracy is {r2}")
+        st.DataFrame DataFrame(input_data)
         
