@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score
 
-df = pd.read_excel("D://newmoli.xlsx")
+df = pd.read_excel("newmoli.xlsx")
 
 
 df = df[(df['time_difference_minutes'] >= 0) & (df['time_difference_minutes'] <= 5000)]
