@@ -1,18 +1,13 @@
-import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split, GridSearchCV
-from xgboost import XGBRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.preprocessing import LabelEncoder
 import pickle
 import streamlit as st
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import r2_score
 
-df = pd.read_excel("newmoli.xlsx")
-
-df=df[(df['rate']>58) &(df['rate']<=80)]
-
-df['date_of_job_post'] = pd.to_datetime(df['date_of_job_post'], format='%d-%m-%Y %H:%M:%S')
-df['application_date'] = pd.to_datetime(df['application_date'], format='%d-%m-%Y %H:%M:%S')
+df = pd.read_excel("D://newmoli.xlsx")
 
 
 df = df[(df['time_difference_minutes'] >= 0) & (df['time_difference_minutes'] <= 5000)]
@@ -28,40 +23,19 @@ label_encoder = LabelEncoder()
 
 df['job_title_encoded'] = label_encoder.fit_transform(df['job_title'])
 
-
-
 X = df[[ 'entity_id', 'job_post_day','application_day',  
         'rate', 'certification', 'job_title_encoded']]
 y = df['time_difference_minutes']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-param_grid = {
-     'n_estimators': [150,200,250],
-     'max_depth': [3],
-     'learning_rate': [0.2]    
- }
+model=RandomForestRegressor(n_estimators=150)
+model.fit(X_train,y_train)
+y_pred=model.predict(X_test)
 
-grid_search = GridSearchCV(estimator=XGBRegressor(),
-                            param_grid=param_grid,
-                            scoring='neg_mean_squared_error',
-                            cv=3,
-                            verbose=1)
+r2=r2_score(y_test,y_pred)
 
-grid_search.fit(X_train, y_train)
-
-best_model = grid_search.best_estimator_
-best_model.fit(X_train, y_train)
-
-y_pred = best_model.predict(X_test)
-mse = mean_squared_error(y_test, y_pred)
-mae = mean_absolute_error(y_test, y_pred)
-r2 = r2_score(y_test, y_pred)
-
-print(f"Mean Squared Error: {mse}")
-print(f"Mean Absolute Error: {mae}")
-print(f"R2 Score: {r2}")
-
+print(r2)
 
 day_mapping = {
     0.0: 'Monday',
@@ -83,15 +57,15 @@ day_mapping_one = {
 
 df['job_post_day_name']=df['job_post_day'].apply(lambda x:day_mapping[x])
 df['application_day_name']=df['application_day'].apply(lambda x:day_mapping_one[x])
-with open('model.pkl', 'wb') as file:
-   pickle.dump(best_model, file)
+
+# with open('model.pkl', 'wb') as file:
+#    pickle.dump(model, file)
     
 # Load the model from the file
 with open('model.pkl', 'rb') as file:
     loaded_model = pickle.load(file)
 
-# Use the loaded model to make predictions
-# predictions = loaded_model.predict(X)
+
 
 st.title("Time Prediction Model")
 
