@@ -77,9 +77,9 @@ selected_entity = st.selectbox('Select city:', cities)
 certifications = ['Select a certification'] + df['certification_name'].unique().tolist()
 selected_certification = st.selectbox('Select certification:', certifications)
 days = ['Select a day'] + df['job_post_day_name'].unique().tolist()
-selected_day = st.selectbox('Select a day:', days)
+selected_day = st.selectbox('Select job_Post day:', days)
 app_days = ['Select a day'] + df['application_day_name'].unique().tolist()
-app_selected_day = st.selectbox('Select a day:', app_days)
+app_selected_day = st.selectbox('Select application day:', app_days)
 
 if st.button('Calculate Rate'):
     if selected_certification!="Select a certification" and selected_entity!="Select certification" and selected_language!="Select a language" and selected_day !="Select a day" and app_selected_day !="Select a day":
